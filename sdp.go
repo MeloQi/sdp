@@ -1,5 +1,5 @@
 // Package sdp implements RFC 4566 SDP: Session Description Protocol.
-package sdp // import "gortc.io/sdp"
+package sdp
 
 import (
 	"bytes"
@@ -271,10 +271,13 @@ func DecodeSession(b []byte, s Session) (Session, error) {
 			line.Value = s[:l+1][l].Value[:0]
 		}
 		if err = line.Decode(scanner.Line()); err != nil {
-			break
+			continue
 		}
 		s = append(s, line)
 		line.Value = nil // not corrupting.
+	}
+	if len(s) != 0 {
+		err = nil
 	}
 	return s, err
 }
